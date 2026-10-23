@@ -64,6 +64,10 @@ public class Student {
         return null;
     }
 
+    public Object getGpa() {
+        return null;
+    }
+
     // TODO 0: Generate Getters & Setters cho tất cả field (IntelliJ: Alt + Insert)
     //  Lưu ý: field boolean "active" → getter là isActive()
 }
