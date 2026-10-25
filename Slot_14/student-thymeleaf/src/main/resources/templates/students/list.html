@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<head>
+    <title>Danh sách sinh viên</title>
+</head>
+<body>
+<section layout:fragment="content">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0">Danh sách sinh viên</h2>
+        <!-- 9.2: Nút thêm mới -->
+        <a th:href="@{/students/new}" class="btn btn-primary">+ Thêm sinh viên</a>
+    </div>
+
+    <!-- 9.3: Form tìm kiếm -->
+    <form th:action="@{/students}" method="get" class="row g-2 mb-3">
+        <div class="col-md-6">
+            <input type="text" name="keyword" class="form-control"
+                   placeholder="Tìm theo mã SV hoặc họ tên..."
+                   th:value="${keyword}">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-outline-primary">Tìm kiếm</button>
+        </div>
+        <div class="col-auto" th:unless="${#strings.isEmpty(keyword)}">
+            <a th:href="@{/students}" class="btn btn-outline-secondary">Xóa lọc</a>
+        </div>
+    </form>
+
+    <!-- 9.4: Thông báo từ khóa -->
+    <p class="text-muted" th:unless="${#strings.isEmpty(keyword)}"
+       th:text="|Tìm thấy ${totalStudents} sinh viên cho từ khóa: ${keyword}|">
+        Tìm thấy 1 sinh viên cho từ khóa: abc
+    </p>
+
+    <!-- TODO 10: 3 Thẻ thống kê -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card stat-card text-bg-primary"><div class="card-body">
+                <div>Tổng số sinh viên</div>
+                <div class="value" th:text="${totalStudents}">0</div>
+            </div></div>
+        </div>
+        <div class="col-md-4">
+            <div class="card stat-card text-bg-success"><div class="card-body">
+                <div>GPA trung bình</div>
+                <div class="value" th:text="${#numbers.formatDecimal(avgGpa, 1, 2)}">0.00</div>
+            </div></div>
+        </div>
+        <div class="col-md-4">
+            <div class="card stat-card text-bg-info"><div class="card-body">
+                <div>Đang học</div>
+                <!-- SpEL collection selection: students.?[active] -->
+                <div class="value" th:text="${#lists.size(students.?[active])}">0</div>
+            </div></div>
+        </div>
+    </div>
+
+
+</section>
+</body>
+</html>
