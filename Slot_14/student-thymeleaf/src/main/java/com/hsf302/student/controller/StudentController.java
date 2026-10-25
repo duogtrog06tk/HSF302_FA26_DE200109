@@ -58,4 +58,57 @@ public class StudentController {
         model.addAttribute("activeMenu", "list");
         return "students/detail";
     }
+
+    // GET /students/new & GET /students/{id}/edit
+    @GetMapping("/new")
+    public String showCreateForm(Model model) {
+        model.addAttribute("student", new Student());
+        model.addAttribute("activeMenu", "new");
+        return "students/form";
+    }
+
+    @GetMapping("/{id}/edit")
+    public String showEditForm(@PathVariable Long id, Model model, RedirectAttributes ra) {
+        Optional<Student> opt = studentService.findById(id);
+        if (opt.isEmpty()) {
+            ra.addFlashAttribute("errorMessage", "Không tìm thấy sinh viên có id = " + id);
+            return "redirect:/students";
+        }
+        model.addAttribute("student", opt.get());
+        model.addAttribute("activeMenu", "list");
+        return "students/form";
+    }
+
+    // POST /students/save
+    @PostMapping("/save")
+    public String save(@Valid @ModelAttribute("student") Student student,
+                       BindingResult result,
+                       Model model,
+                       RedirectAttributes ra) {
+
+        // Kiểm tra trùng mã sinh viên
+        if (studentService.isStudentCodeDuplicated(student.getStudentCode(), student.getId())) {
+            result.rejectValue("studentCode", "duplicate", "Mã sinh viên đã tồn tại");
+        }
+
+        // Nếu có lỗi, trả lại form (không redirect)
+        if (result.hasErrors()) {
+            model.addAttribute("activeMenu", student.getId() == null ? "new" : "list");
+            return "students/form";
+        }
+
+        // Lưu sinh viên thành công
+        boolean isNew = (student.getId() == null);
+        studentService.save(student);
+        ra.addFlashAttribute("successMessage",
+                (isNew ? "Thêm" : "Cập nhật") + " sinh viên " + student.getFullName() + " thành công!");
+        return "redirect:/students";
+    }
+
+    @PostMapping("/{id}/delete")
+    public String delete(@PathVariable Long id, RedirectAttributes ra) {
+        studentService.deleteById(id);
+        ra.addFlashAttribute("successMessage", "Đã xóa sinh viên có id = " + id);
+        return "redirect:/students";
+    }
 }
