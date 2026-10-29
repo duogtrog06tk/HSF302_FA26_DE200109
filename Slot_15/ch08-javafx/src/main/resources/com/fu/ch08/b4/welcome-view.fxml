@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<!-- TODO 7: resources/com/fu/ch08/b4/welcome-view.fxml -->
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.fu.ch08.b4.WelcomeController"
+      spacing="20" alignment="CENTER" style="-fx-padding: 30;">
+    <Label fx:id="lblWelcome" style="-fx-font-size: 18; -fx-font-weight: bold;"/>
+    <Button text="Đăng xuất" onAction="#handleLogout" style="-fx-font-size: 14;"/>
+</VBox>
