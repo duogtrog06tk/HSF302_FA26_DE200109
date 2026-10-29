@@ -11,6 +11,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -95,10 +97,25 @@ public class DrinkOrderApp extends Application {
     private void registerEvents() {
         // TODO 4: Cách 1 — method reference (gọn khi logic dài, tách ra method riêng)
         btnCalc.setOnAction(this::handleCalc);
+
+        // TODO 5: Cách 2 — lambda (phổ biến nhất)
+        btnClear.setOnAction(e -> {
+            reset();
+            log("Bấm Làm lại");
+        });
     }
 
     private void handleCalc(ActionEvent e) {
         // stub logic for calculating price
+    }
+
+    private void reset() {
+        // stub for reset
+    }
+
+    private void log(String msg) {
+        taLog.appendText("[%s] %s%n".formatted(
+                LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")), msg));
     }
 
     public static void main(String[] args) {
