@@ -1,10 +1,14 @@
 package com.fu.ch08.b3;
 
 import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.geometry.VPos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 public class RegisterApp extends Application {
@@ -45,7 +49,7 @@ public class RegisterApp extends Application {
     @Override
     public void start(Stage stage) {
         setupControls();
-        registerView = new VBox();
+        registerView = buildRegisterView();
         scene = new Scene(registerView, 580, 660);
         stage.setScene(scene);
         stage.setTitle("B3 - Đăng ký & Đăng nhập");
@@ -77,6 +81,58 @@ public class RegisterApp extends Application {
         // Nút Đăng ký chỉ bật khi đã tích "Đồng ý" — bind thay vì if/else trong handler
         btnRegister.disableProperty().bind(chkAgree.selectedProperty().not());
         btnRegister.setDefaultButton(true);
+    }
+
+    // TODO 3: Giao diện — GridPane 2 cột, mỗi ô nhập kèm label lỗi bên dưới
+    private Parent buildRegisterView() {
+        GridPane grid = new GridPane();
+        grid.setHgap(12);
+        grid.setVgap(6);
+        int r = 0;
+        addField(grid, r++, "Họ tên *", tfFullName, errFullName);
+        addField(grid, r++, "Email *", tfEmail, errEmail);
+        addField(grid, r++, "Username *", tfUsername, errUsername);
+        HBox strength = new HBox(8, pbStrength, lblStrength);
+        strength.setAlignment(Pos.CENTER_LEFT);
+        addField(grid, r++, "Mật khẩu *", new VBox(4, pfPassword, strength), errPassword);
+        addField(grid, r++, "Xác nhận MK *", pfConfirm, errConfirm);
+        addField(grid, r++, "Giới tính *", new HBox(15, rbMale, rbFemale, rbOther), errGender);
+        addField(grid, r++, "Ngày sinh *", dpDob, errDob);
+        addField(grid, r++, "Ngành *", cbMajor, errMajor);
+        addField(grid, r++, "Sở thích", new FlowPane(12, 6, chkSport, chkMusic, chkGame, chkReading), null);
+
+        ColumnConstraints c0 = new ColumnConstraints(110);
+        ColumnConstraints c1 = new ColumnConstraints();
+        c1.setHgrow(Priority.ALWAYS);
+        grid.getColumnConstraints().addAll(c0, c1);
+
+        Label title = new Label("ĐĂNG KÝ TÀI KHOẢN");
+        title.setStyle("-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #1a73e8;");
+
+        HBox actions = new HBox(10, btnRegister, btnReset);
+        actions.setAlignment(Pos.CENTER_RIGHT);
+
+        Hyperlink linkLogin = new Hyperlink("Đã có tài khoản? Đăng nhập");
+        linkLogin.setOnAction(e -> scene.setRoot(buildLoginView("")));
+
+        VBox form = new VBox(12, title, grid, chkAgree, actions, linkLogin);
+        form.setPadding(new Insets(20));
+
+        ScrollPane sp = new ScrollPane(form);   // cửa sổ nhỏ vẫn cuộn được, không bị cắt
+        sp.setFitToWidth(true);
+        return sp;
+    }
+
+    private void addField(GridPane grid, int row, String label, Node input, Label error) {
+        Label lbl = new Label(label);
+        lbl.setPadding(new Insets(4, 0, 0, 0));
+        GridPane.setValignment(lbl, VPos.TOP);  // nhãn canh theo dòng đầu (ô nhập), không canh giữa cả ô
+        grid.add(lbl, 0, row);
+        grid.add(error == null ? input : new VBox(2, input, error), 1, row);
+    }
+
+    private Parent buildLoginView(String prefillUser) {
+        return new Region();
     }
 
     private static Label err() {
